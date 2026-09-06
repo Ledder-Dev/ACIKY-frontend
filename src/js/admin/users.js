@@ -2,6 +2,7 @@ import { requireAdmin, getUser } from '../auth.js'
 import { apiFetch } from '../api.js'
 import { t } from '../i18n.js'
 import { formatUserName } from '../utils/formatUserName.js'
+import { normalizeText } from '../utils/normalize.js'
 
 let users = []
 
@@ -166,11 +167,11 @@ async function markRegistrationSeen(id, btn) {
 }
 
 function renderFilteredUsers(tbody, query) {
-  const q = query.trim().toLowerCase()
+  const q = normalizeText(query)
   const filtered = q
     ? users.filter(u => {
-        const full = [u.name, u.last_name, u.spiritual_name, u.email, u.username]
-          .filter(Boolean).join(' ').toLowerCase()
+        const full = normalizeText([u.name, u.last_name, u.spiritual_name, u.email, u.username]
+          .filter(Boolean).join(' '))
         return full.includes(q)
       })
     : users
