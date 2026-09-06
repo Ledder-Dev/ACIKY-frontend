@@ -1,6 +1,6 @@
 # Current Project Status
 
-Last updated: 2026-09-04
+Last updated: 2026-09-06
 
 ## In Progress
 _Nada activo._
@@ -18,6 +18,13 @@ _Nada activo._
 - `develop` (rama intermedia) estaba desalineada — 4 commits propios nunca propagados (fix import relativo CONVENTIONS, ref yoga-backend en contrato API, recorte `settings.json`, compactación `ARCHITECTURE.md`). Sincronizada 2026-08-20: merge de `devRandy` sin conflictos, sus 4 commits propios preservados, pusheada a `origin/develop`.
 
 ## Recently Completed
+- [x] **feat: buscadores del sitio insensibles a tildes/acentos** (2026-09-06)
+  - Utilidad compartida `normalizeText()` (`src/js/utils/normalize.js`) via NFD + strip de marcas diacriticas (stdlib, sin mapa manual)
+  - Aplicada a 7 buscadores: publico (`posturas.js`, `videos.js`, `blog.js` — solo busqueda libre, filtro de `activeTag` sin tocar) y admin (`admin/posturas.js`, `admin/videos.js`, `admin/users.js`, `admin/onlineSadhana.js`)
+  - `npm run build` verificado sin errores. Commit `9dbfe00`, PR #139 mergeado a `master`, `develop` sincronizada
+- [x] **feat: credito "Sitio desarrollado por Ladder Dev" en footer** (2026-09-06)
+  - Link a ladderdev.com agregado en `src/partials/footer.html`, sitewide via partial
+  - PR #138 mergeado a `master`
 - [x] **fix: favicon.ico con canal alpha (fondo transparente)** (2026-09-04)
   - PNG embebido tenía colortype 2 (RGB sin alpha), heredado de rasterizado original vía screenshot Playwright/Chromium sin `omitBackground: true`
   - SVG fuente (`logo.svg`) confirmado sin fondo blanco propio — defecto solo en la rasterización
