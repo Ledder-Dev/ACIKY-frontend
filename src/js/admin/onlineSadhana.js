@@ -2,6 +2,7 @@ import { requireAdmin } from '../auth.js'
 import { apiFetch } from '../api.js'
 import { t } from '../i18n.js'
 import { formatUserName } from '../utils/formatUserName.js'
+import { normalizeText } from '../utils/normalize.js'
 
 let participants = []
 let allUsers = []
@@ -153,12 +154,12 @@ function renderUserPicker(query) {
   if (!list) return
 
   const participantIds = new Set(participants.map(p => p.id))
-  const q = query.trim().toLowerCase()
+  const q = normalizeText(query)
 
   let available = allUsers.filter(u => !participantIds.has(u.id))
   if (q) {
     available = available.filter(u => {
-      const full = [u.name, u.last_name, u.spiritual_name, u.email].filter(Boolean).join(' ').toLowerCase()
+      const full = normalizeText([u.name, u.last_name, u.spiritual_name, u.email].filter(Boolean).join(' '))
       return full.includes(q)
     })
   }

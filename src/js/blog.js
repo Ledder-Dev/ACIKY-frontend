@@ -2,6 +2,7 @@ import { apiFetch, API_BASE } from './api.js'
 import { localized, t } from './i18n.js'
 import { shareContent } from './utils/share.js'
 import { formatUserName } from './utils/formatUserName.js'
+import { normalizeText } from './utils/normalize.js'
 
 const POSTS_PER_PAGE = 9
 
@@ -79,7 +80,7 @@ async function loadPosts() {
 }
 
 function applySearch() {
-  const query = document.getElementById('blogSearch')?.value.trim().toLowerCase() || ''
+  const query = normalizeText(document.getElementById('blogSearch')?.value || '')
 
   filteredPosts = allPosts.filter(post => {
     if (activeTag) {
@@ -87,13 +88,13 @@ function applySearch() {
       if (!postTags.includes(activeTag.toLowerCase())) return false
     }
     if (query) {
-      const title = (localized(post, 'title') || '').toLowerCase()
-      const author = getAuthorName(post).toLowerCase()
-      let content = (localized(post, 'content') || '').toLowerCase()
+      const title = normalizeText(localized(post, 'title') || '')
+      const author = normalizeText(getAuthorName(post))
+      let content = normalizeText(localized(post, 'content') || '')
       if (post.content_blocks) {
         try {
           const blocks = JSON.parse(post.content_blocks)
-          content = blocks.filter(b => b.type === 'text').map(b => `${b.content_es || ''} ${b.content_en || ''}`).join(' ').toLowerCase()
+          content = normalizeText(blocks.filter(b => b.type === 'text').map(b => `${b.content_es || ''} ${b.content_en || ''}`).join(' '))
         } catch { /* keep legacy content */ }
       }
       return title.includes(query) || content.includes(query) || author.includes(query)
