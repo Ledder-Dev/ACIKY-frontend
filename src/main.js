@@ -296,6 +296,7 @@ async function initHomeEvents() {
     if (events.length === 0) {
       const section = document.getElementById('homeEventsSection')
       if (section) section.classList.add('hidden')
+      document.querySelectorAll('script[data-event-ldjson]').forEach((el) => el.remove())
       return
     }
 
@@ -336,6 +337,30 @@ async function initHomeEvents() {
           </div>
         </a>`
     }).join('')
+
+    // Structured data: Event schema from live API data (no placeholders)
+    document.querySelectorAll('script[data-event-ldjson]').forEach((el) => el.remove())
+    events.forEach((ev) => {
+      const script = document.createElement('script')
+      script.type = 'application/ld+json'
+      script.dataset.eventLdjson = ev.id
+      script.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        name: localized(ev, 'name'),
+        startDate: ev.date,
+        eventStatus: 'https://schema.org/EventScheduled',
+        eventAttendanceMode: ev.is_online
+          ? 'https://schema.org/OnlineEventAttendanceMode'
+          : 'https://schema.org/OfflineEventAttendanceMode',
+        location: ev.is_online
+          ? { '@type': 'VirtualLocation', url: `${window.location.origin}${base}pages/event.html?id=${ev.id}` }
+          : { '@type': 'Place', name: ev.address || 'ACIKY', address: ev.address || 'La Habana, Cuba' },
+        organizer: { '@type': 'Organization', name: 'ACIKY', url: 'https://aciky.org/' },
+        url: `${window.location.origin}${base}pages/event.html?id=${ev.id}`,
+      })
+      document.head.appendChild(script)
+    })
 
     // Render dots when multiple events
     const dotsEl = document.getElementById('homeEventsDots')
