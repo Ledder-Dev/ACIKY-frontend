@@ -2,6 +2,7 @@ import { apiFetch } from './api.js'
 import { localized } from './i18n.js'
 import { shareContent } from './utils/share.js'
 import { requireAuth } from './auth.js'
+import { normalizeText } from './utils/normalize.js'
 
 let allVideos = []
 
@@ -58,8 +59,9 @@ function renderVideos(query = '') {
   const noResults = document.getElementById('videosNoResults')
   if (!container) return
 
-  const filtered = query.trim()
-    ? allVideos.filter(item => localized(item, 'title').toLowerCase().includes(query.trim().toLowerCase()))
+  const q = normalizeText(query)
+  const filtered = q
+    ? allVideos.filter(item => normalizeText(localized(item, 'title')).includes(q))
     : allVideos
 
   if (filtered.length === 0) {

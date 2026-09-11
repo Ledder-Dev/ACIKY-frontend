@@ -2,6 +2,7 @@ import { apiFetch, API_BASE } from './api.js'
 import { localized } from './i18n.js'
 import { shareContent } from './utils/share.js'
 import { requireAuth } from './auth.js'
+import { normalizeText } from './utils/normalize.js'
 
 let allItems = []
 
@@ -70,8 +71,9 @@ function renderPosturas(query = '') {
   const noResults = document.getElementById('posturasNoResults')
   if (!container) return
 
-  const filtered = query.trim()
-    ? allItems.filter(item => localized(item, 'title').toLowerCase().includes(query.trim().toLowerCase()))
+  const q = normalizeText(query)
+  const filtered = q
+    ? allItems.filter(item => normalizeText(localized(item, 'title')).includes(q))
     : allItems
 
   if (filtered.length === 0) {

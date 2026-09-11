@@ -1,5 +1,6 @@
 import { requireAdmin } from '../auth.js'
 import { apiFetch } from '../api.js'
+import { normalizeText } from '../utils/normalize.js'
 
 let posturas = []
 
@@ -100,8 +101,9 @@ function renderPosturas(query = '') {
   const noResults = document.getElementById('videosNoResults')
   if (!container) return
 
-  const filtered = query.trim()
-    ? posturas.filter(item => (item.title || '').toLowerCase().includes(query.trim().toLowerCase()))
+  const q = normalizeText(query)
+  const filtered = q
+    ? posturas.filter(item => normalizeText(item.title || '').includes(q))
     : posturas
 
   if (filtered.length === 0) {
